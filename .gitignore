@@ -1,0 +1,5 @@
+# rbnx build output: codegen, colcon workspace, package venv
+rbnx-build/
+logs/
+__pycache__/
+*.pyc

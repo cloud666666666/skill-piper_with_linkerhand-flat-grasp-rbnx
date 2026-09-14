@@ -1,0 +1,26 @@
+# robonix/skill/pick/grab — grasp a named object and KEEP HOLDING it.
+#
+# User-invocable atomic intent: "抓起那个番茄". Runs the flat-palm pipeline:
+#   1. service/perception/object_detect/detect_object   — find the object
+#   2. service/perception/grasp_pose/grasp_request      — pixel bbox -> arm pose
+#   3. service/manipulation/execute_grasp               — drive the arm there
+#   4. primitive/hand/joint_command                     — close the fingers
+#   5. execute_grasp again, lifted                      — hold, clear of the table
+#
+# The hand close is a separate step from execute_grasp on purpose: that service
+# drives the ARM only (its `gripper_width` field feeds the Piper gripper entry,
+# which this robot does not have). The LinkerHand is a different primitive on a
+# different transport, so the skill owns that step.
+#
+# Reuses Pick.srv verbatim (request = object_name; response = success + pose),
+# so no new IDL is required.
+#
+# Synchronous: blocks until the arm finishes the grasp or the budget expires.
+[contract]
+id      = "robonix/skill/pick/grab"
+version = "1"
+kind    = "skill"
+idl     = "pick/srv/Pick.srv"
+
+[mode]
+type = "rpc"

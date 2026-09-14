@@ -1,0 +1,20 @@
+# Lifecycle interface for the flat-grasp skill.
+#
+# `rbnx boot` calls Driver(CMD_INIT, config_json) on every package and stops
+# there for skills (state = INACTIVE). The executor sends Driver(CMD_ACTIVATE)
+# on the FIRST MCP call, at which point on_activate resolves the upstream
+# perception + manipulation services through atlas. Without this contract the
+# on_init/on_activate handlers never fire and every MCP call fails with
+# "not initialized".
+#
+# NOTE: a skill has no primitive/service driver to borrow, so this file is
+# package-local by necessity — the contract id must be exactly
+# `<the Skill(namespace=...)>/driver`.
+[contract]
+id      = "robonix/skill/pick/driver"
+version = "1"
+kind    = "skill"
+idl     = "lifecycle/srv/Driver.srv"
+
+[mode]
+type = "rpc"

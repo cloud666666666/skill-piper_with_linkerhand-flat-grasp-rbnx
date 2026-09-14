@@ -1,0 +1,21 @@
+# Read the hand's current axis positions — package-local contract.
+#
+# Not in the robonix global tree: the global hand set covers readback as the
+# topic_out contracts `state_joint` / `state_finger` over `hand/msg/*.msg`,
+# which is a codegen search root rather than a buildable ROS package (see the
+# package README). This rpc is the on-demand axis-level equivalent, and exists
+# so a consumer is not forced to poll a stream it may not need.
+#
+# Same id and shape as the CAN sibling's `get_state`
+# (syswonder/primitive-linkerbot-linker_hand_o6-hand-rbnx), which declares the
+# contract but ships no IDL for it; capabilities/lib/hand/srv/GetState.srv here
+# is that missing IDL.
+[contract]
+id      = "robonix/primitive/hand/get_state"
+version = "1"
+kind    = "primitive"
+idl     = "hand/srv/GetState.srv"
+description = "Read current per-axis positions, normalized [0,1] with 0=open and 1=closed."
+
+[mode]
+type = "rpc"

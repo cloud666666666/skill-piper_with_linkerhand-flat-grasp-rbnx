@@ -1,0 +1,29 @@
+# Read the hand's current axis positions.
+#
+# PACKAGE-LOCAL contract, not a global one. The robonix source tree has no
+# `robonix/primitive/hand/get_state`: the global hand set covers readback as the
+# topic_out contracts `state_joint` / `state_finger`, whose IDL is
+# `hand/msg/*.msg` — a codegen search root, not a buildable ROS package. Serving
+# those would mean vendoring a copy of a global IDL and colcon-building it, i.e.
+# owning a fork that drifts.
+#
+# The sibling package syswonder/primitive-linkerbot-linker_hand_o6-hand-rbnx
+# reaches the same conclusion and exposes `get_state` instead — but ships no IDL
+# for it, so that contract has nothing to generate from. This file is that
+# missing IDL, so the contract is actually servable. Same id, same shape:
+# on-demand axis-level readback.
+---
+# Request
+# empty
+
+# Response
+
+# Whether the read succeeded.
+bool ok
+
+# Non-empty on failure: human-readable reason.
+string message
+
+# Current per-axis positions, [0,1] with 0=open / 1=closed. Axis names match
+# those returned by the `info` contract.
+JointValue[] joints

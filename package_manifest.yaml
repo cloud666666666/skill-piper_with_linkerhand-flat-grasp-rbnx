@@ -1,0 +1,47 @@
+# Flat-palm enveloping grasp skill for the roboarm (Piper + LinkerHand O6) on
+# REAL hardware.
+#
+# Owns `robonix/skill/pick/*`. Orchestrates the perception and manipulation
+# services; owns no hardware itself except the LinkerHand close/open step,
+# which no other service covers (execute_grasp drives the ARM only, and this
+# robot has no gripper for its gripper_width field to act on).
+#
+# Reference: /home/czn/wfw/robot-agilex-piper/packages/
+#            skill-pick-vertical-grasp-rbnx (same arm, vertical grasp, gripper).
+# Deltas here, all forced by the different end effector:
+#   - grasp is FLAT (palm parallel to the table, wrist pinned) rather than a
+#     vertical-down gripper pose — the geometry lives in grasp_pose's flat mode
+#     and roboarm_ik's solve_flat, not in this skill
+#   - the close/open step goes to primitive/hand/joint_command instead of a
+#     `gripper` entry inside the arm's JointState
+#   - no LLM matching stage: the object name is passed straight to the
+#     detector, whose substring match is enough for a 3-class model
+#   - `put_down` exists because `grab` has no release: without it the agent
+#     answers "放下" with `pick`, which re-grasps instead of releasing
+#
+# NOTE: the capabilities/ directory also carries .toml files for the upstream
+# service/perception and service/manipulation contracts. Those are NOT provided
+# by this skill — they exist so `rbnx codegen` knows which IDLs to compile into
+# grasp_pb2 / manipulation_pb2 for the gRPC calls. Only the names listed under
+# `capabilities:` below are advertised to atlas.
+manifestVersion: 1
+
+package:
+  name: robonix.skill.pick.flat_grasp
+  version: 0.1.0
+  vendor: robonix
+  description: Flat-palm enveloping grasp skill (Piper + LinkerHand O6) — orchestrates object_detect + grasp_pose + execute_grasp and drives the hand.
+  license: MulanPSL-2.0
+  tags: [skill, pick, grasp, linkerhand, flat-grasp, manipulation]
+  maintainers:
+    - Joker.Yun <2353493891@qq.com>
+
+build: bash scripts/build.sh
+start: bash scripts/start.sh
+
+capabilities:
+  - name: robonix/skill/pick/driver
+  - name: robonix/skill/pick/grab
+  - name: robonix/skill/pick/pick
+  - name: robonix/skill/pick/put_down
+  - name: robonix/skill/pick/home

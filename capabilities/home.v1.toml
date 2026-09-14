@@ -1,0 +1,23 @@
+# robonix/skill/pick/home — park the arm, optionally de-energising it.
+#
+# Why this lives on the skill rather than on roboarm_ik: that service already
+# exposes `teach_safe`, `reset` and the arm's `enable_srv` machinery, but the
+# first two are gRPC contracts and the executor only offers MCP tools to the
+# planner — an unexposed service is invisible to `rbnx chat`, so asked to park
+# the arm the agent has no tool for it at all. This is the thin MCP face over
+# those calls.
+#
+# Mirrors roboarm's own arm/disable_arm.py (Arm.disconnect_arm): reset ->
+# move_to_home(safe_pos=True) -> disable_torque. The order matters — disabling
+# before the arm is resting lets it sag under gravity.
+#
+# "回零点" is safe on this arm: both resting poses put link6 near z=0.21, well
+# above the 0.11 table at which the flat grasp operates.
+[contract]
+id      = "robonix/skill/pick/home"
+version = "1"
+kind    = "skill"
+idl     = "pick/srv/Home.srv"
+
+[mode]
+type = "rpc"

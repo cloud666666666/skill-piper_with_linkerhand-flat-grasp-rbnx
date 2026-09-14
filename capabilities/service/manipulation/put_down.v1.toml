@@ -1,0 +1,11 @@
+# Codegen mirror for the upstream manipulation put_down service contract.
+#
+# pick_skill consumes this contract over gRPC but does not provide it.
+[contract]
+id      = "robonix/service/manipulation/put_down"
+version = "1"
+kind    = "service"
+idl     = "manipulation/srv/PutDown.srv"
+
+[mode]
+type = "rpc"

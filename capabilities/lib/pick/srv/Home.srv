@@ -1,0 +1,28 @@
+# Move the arm to a resting pose, optionally de-energising it afterwards.
+
+# Request
+# Which resting pose:
+#   "safe" (default) — the taught standby pose (roboarm_ik teach_safe).
+#   "zero"           — all six joints at 0 (roboarm_ik reset / init_joints_deg).
+# Both put link6 around z=0.21, comfortably clear of the table, so either is a
+# safe answer to "go home" / "回零点"; "safe" is the default because it is the
+# pose this deploy actually boots into.
+string target
+
+# De-energise the arm's motors after it arrives ("失能", not "断电" — the
+# drivers stay powered and the arm can be re-enabled without a restart).
+# When true the pose move ALWAYS happens first: disabling in mid-air lets the
+# arm sag under its own weight, which is why roboarm's own disconnect_arm()
+# does reset -> move_to_home(safe_pos=True) -> disable_torque in that order.
+bool disable
+---
+# Response
+
+# Whether the arm reached the requested pose (and was disabled, if asked).
+bool success
+
+# Human-readable status.
+string message
+
+# How long the whole operation took (s).
+float32 elapsed_s

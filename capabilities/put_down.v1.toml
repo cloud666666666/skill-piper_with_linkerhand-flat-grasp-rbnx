@@ -1,0 +1,26 @@
+# robonix/skill/pick/put_down — release a HELD object at its grasp point.
+#
+# This is the missing half of `grab`. Without it the agent has no way to answer
+# "放下" and reaches for `pick` instead — but `pick` RE-GRASPS (detect -> grasp
+# -> return), which is wrong for an object already in the hand: it opens the
+# fingers on the way in, drops whatever was held, and picks it up again. The
+# executor's own planner hit exactly this on 2026-09-14 and reported the gap
+# ("本部署没有单独的「松开/放置」原语").
+#
+# Behaviour: descend to the point the object was grasped from, open the hand,
+# retreat, park. That is deliberately NOT "let go wherever the arm happens to
+# be" — an object released at carrying height would be dropped from 5 cm, and
+# one released over the box or the tooling would be lost. The grasp point is
+# the only location this deploy can place at with confidence, since
+# roboarm_ik's put_down_joints_deg is unset.
+#
+# Errors if nothing is held, or if no grasp point is known (e.g. after a skill
+# restart).
+[contract]
+id      = "robonix/skill/pick/put_down"
+version = "1"
+kind    = "skill"
+idl     = "pick/srv/PutDown.srv"
+
+[mode]
+type = "rpc"

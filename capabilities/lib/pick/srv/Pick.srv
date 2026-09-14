@@ -1,0 +1,32 @@
+# Pick a named object with the arm.
+
+# Request
+# Open-vocabulary object name interpreted by the configured LLM/VLM detector.
+string object_name
+---
+# Response
+
+# Whether the arm completed the grasp motion and fresh gripper feedback
+# confirmed that an object is held.
+bool success
+
+# Free-form status. On failure, identifies which stage broke:
+#   "detection_failed: ..."
+#   "grasp_pose_failed: ..."
+#   "execute_grasp_failed: ..."
+#   "timeout: ..."
+string message
+
+# The grasp pose chosen and executed. Its frame is supplied by grasp_pose
+# (the current deploy uses arm/base_link). Fields are zero if no grasp pose
+# was computed.
+geometry_msgs/PoseStamped grasp_pose
+
+# Gripper opening for the chosen grasp (m). 0 if no grasp computed.
+float32 gripper_width
+
+# Score (heuristic / handler-defined) of the chosen grasp. 0 if no grasp.
+float32 score
+
+# How long the whole call took (s).
+float32 elapsed_s

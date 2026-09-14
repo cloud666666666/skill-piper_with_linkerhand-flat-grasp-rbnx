@@ -1,0 +1,25 @@
+# robonix/skill/pick/pick — grasp a named object, then PUT IT BACK DOWN.
+#
+# Same pipeline as grab, plus a release step:
+#   1..5  as grab (detect -> grasp_pose -> descend -> close -> lift)
+#   6. execute_grasp to the place position, at grasp height
+#   7. primitive/hand/joint_command: open the palm
+#   8. execute_grasp up, clear of the table
+#   9. service/manipulation/teach_safe — park the arm
+#
+# WHERE IT PLACES:
+#   * `put_down_joints_deg` configured on roboarm_ik  -> that taught pose
+#   * otherwise                                        -> back onto the spot it
+#     was picked from (the grasp XY at grasp height), which is the default
+#     because it needs no taught target and cannot drop the object somewhere
+#     unintended.
+#
+# Reuses Pick.srv verbatim.
+[contract]
+id      = "robonix/skill/pick/pick"
+version = "1"
+kind    = "skill"
+idl     = "pick/srv/Pick.srv"
+
+[mode]
+type = "rpc"
