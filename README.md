@@ -1,4 +1,4 @@
-# skill-piper-linker-flat-grasp-rbnx
+# skill-piper_with_linkerhand-flat-grasp-rbnx
 
 Robonix skill for **flat-palm enveloping grasp** with an AgileX Piper arm and a
 LinkerHand O6 dexterous hand. Owns `robonix/skill/pick/*`.
